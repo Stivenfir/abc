@@ -102,8 +102,13 @@ export default function Login() {
             transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
             className="flex items-center gap-3"
           >
-            <img src={abcLogo} alt="ABC" className="h-10 w-10 rounded-lg object-cover" />
-            <h1 className="text-2xl font-black text-white">ABC Desk Booking</h1>
+            <div className="relative flex items-center justify-center h-14 w-14 rounded-2xl bg-white/95 p-2 shadow-[0_0_28px_rgba(34,211,238,0.45)] ring-1 ring-white/70">
+              <img src={abcLogo} alt="ABC" className="h-full w-full object-contain drop-shadow-[0_0_10px_rgba(59,130,246,0.45)]" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-black text-white leading-tight">ABC Desk Booking</h1>
+              <p className="text-xs text-cyan-100/90 tracking-wide uppercase">Corporate Experience</p>
+            </div>
           </motion.div>
 
           <motion.div

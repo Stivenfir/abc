@@ -58,8 +58,10 @@ export default function CM_Dashboard() {
           <div className="rounded-2xl border border-white/20 bg-white/10 backdrop-blur px-5 py-4 min-w-[280px]">
             <p className="text-xs uppercase tracking-wider text-slate-200">Fecha del sistema</p>
             <p className="mt-2 text-base font-semibold capitalize">{hoy}</p>
-            <div className="mt-4 inline-flex items-center gap-3 px-4 py-2 rounded-lg border border-white/25 bg-white/10">
-              <img src={abcLogo} alt="ABC" className="h-8 w-8 rounded-md object-cover" />
+            <div className="mt-4 inline-flex items-center gap-3 px-4 py-2.5 rounded-xl border border-cyan-200/35 bg-white/15 shadow-[0_0_22px_rgba(34,211,238,0.22)]">
+              <div className="h-10 w-10 rounded-lg bg-white/95 p-1.5 ring-1 ring-white/80">
+                <img src={abcLogo} alt="ABC" className="h-full w-full object-contain drop-shadow-[0_0_8px_rgba(56,189,248,0.45)]" />
+              </div>
               <span className="text-xs font-black tracking-[0.2em] text-white">ABC DESK BOOKING</span>
             </div>
           </div>

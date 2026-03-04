@@ -29,8 +29,9 @@ export default function LoginCard({
 
           <div className="flex items-start justify-between mb-6 relative">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-white text-white flex items-center justify-center shadow-lg shadow-blue-600/20 p-1">
-                <img src={abcLogo} alt="ABC" className="h-full w-full object-cover rounded-lg" />
+              <div className="relative w-16 h-16 rounded-2xl bg-white p-2 flex items-center justify-center shadow-[0_10px_35px_rgba(59,130,246,0.35)] ring-1 ring-cyan-200/70">
+                <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-cyan-300/30 via-blue-300/20 to-fuchsia-300/30 blur-md" />
+                <img src={abcLogo} alt="ABC" className="relative h-full w-full object-contain drop-shadow-[0_0_8px_rgba(59,130,246,0.35)]" />
               </div>
               <div>
                 <h3 className="text-2xl font-extrabold text-gray-800 leading-tight">Iniciar Sesión</h3>
