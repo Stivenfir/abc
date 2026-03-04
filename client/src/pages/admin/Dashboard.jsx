@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import abcLogo from "../../Imagenes/abc.png";
 
 const cards = [
   {
@@ -64,7 +65,8 @@ export default function Dashboard() {
           <div className="rounded-2xl border border-white/20 bg-white/10 backdrop-blur px-5 py-4 min-w-[280px]">
             <p className="text-xs uppercase tracking-wider text-slate-200">Fecha del sistema</p>
             <p className="mt-2 text-base font-semibold capitalize">{hoy}</p>
-            <div className="mt-4 inline-flex items-center justify-center px-4 py-2 rounded-lg border border-white/25 bg-white/10">
+            <div className="mt-4 inline-flex items-center gap-3 px-4 py-2 rounded-lg border border-white/25 bg-white/10">
+              <img src={abcLogo} alt="ABC" className="h-8 w-8 rounded-md object-cover" />
               <span className="text-xs font-black tracking-[0.2em] text-white">ABC DESK BOOKING</span>
             </div>
           </div>

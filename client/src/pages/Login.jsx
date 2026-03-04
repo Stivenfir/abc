@@ -4,6 +4,27 @@ import { motion } from "framer-motion";
 import { setToken } from "../auth";
 import AnimatedBackground from "../components/AnimatedBackground";
 import LoginCard from "../components/LoginCard";
+import abcLogo from "../Imagenes/abc.png";
+
+const roleRouteMap = {
+  admin: "/dashboard",
+  jefe: "/l_dashboard",
+  empleado: "/c_dashboard",
+};
+
+function normalizeRole(roleValue) {
+  const role = String(roleValue ?? "").toLowerCase().trim();
+
+  if (role === "1" || role === "admin") {
+    return "admin";
+  }
+
+  if (role === "2" || role === "jefe") {
+    return "jefe";
+  }
+
+  return "empleado";
+}
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -36,20 +57,13 @@ export default function Login() {
       }
 
       if (response.ok) {
+        const normalizedRole = normalizeRole(data?.user?.role);
         setToken(data?.token);
         localStorage.setItem("username", username);
+        localStorage.setItem("userRole", normalizedRole);
         setSuccessMessage(`✔ Bienvenido, ${username}`);
 
-        switch (data?.user?.role) {
-          case "1":
-            setTimeout(() => navigate("/dashboard"), 900);
-            break;
-          case "2":
-            setTimeout(() => navigate("/l_dashboard"), 900);
-            break;
-          default:
-            setTimeout(() => navigate("/c_dashboard"), 900);
-        }
+        setTimeout(() => navigate(roleRouteMap[normalizedRole] || roleRouteMap.empleado), 900);
       } else {
         setError(data?.message || "Usuario o contraseña incorrectos");
       }
@@ -82,14 +96,15 @@ export default function Login() {
 
       <header className="relative z-10 w-full p-6">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <motion.h1
+          <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-            className="text-2xl font-black text-white"
+            className="flex items-center gap-3"
           >
-            ABC Desk Booking
-          </motion.h1>
+            <img src={abcLogo} alt="ABC" className="h-10 w-10 rounded-lg object-cover" />
+            <h1 className="text-2xl font-black text-white">ABC Desk Booking</h1>
+          </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: -10 }}

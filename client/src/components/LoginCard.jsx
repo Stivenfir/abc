@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import abcLogo from "../Imagenes/abc.png";
 
 export default function LoginCard({
   username,
@@ -28,8 +29,8 @@ export default function LoginCard({
 
           <div className="flex items-start justify-between mb-6 relative">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex items-center justify-center font-bold shadow-lg shadow-blue-600/30">
-                ABC
+              <div className="w-12 h-12 rounded-xl bg-white text-white flex items-center justify-center shadow-lg shadow-blue-600/20 p-1">
+                <img src={abcLogo} alt="ABC" className="h-full w-full object-cover rounded-lg" />
               </div>
               <div>
                 <h3 className="text-2xl font-extrabold text-gray-800 leading-tight">Iniciar Sesión</h3>

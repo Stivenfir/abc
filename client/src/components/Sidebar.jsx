@@ -23,6 +23,7 @@ export default function Sidebar({ isOpen, onClose }) {
   };
 
   const currentRole = roleConfig[userRole] || roleConfig.empleado;
+  const visibleItems = menuItems.filter((item) => item.roles.includes(userRole));
   const userInitials = username
     .split(" ")
     .filter(Boolean)
@@ -69,7 +70,7 @@ export default function Sidebar({ isOpen, onClose }) {
             </motion.div>
 
             <nav className="space-y-1.5 flex-1 overflow-y-auto pr-1">
-              {menuItems.map((item, index) => {
+              {visibleItems.map((item, index) => {
                 const isActive = location.pathname === item.path;
 
                 return (
