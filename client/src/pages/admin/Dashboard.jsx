@@ -49,6 +49,15 @@ export default function Dashboard() {
         className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-r from-[#0b1630] via-[#0f2248] to-[#17325c] p-7 md:p-9 text-white shadow-xl"
       >
         <div className="absolute -top-16 -right-10 w-56 h-56 rounded-full bg-blue-400/15 blur-3xl" />
+        <div className="absolute top-5 right-5 hidden lg:flex items-center gap-3 rounded-2xl border border-cyan-200/40 bg-white/10 backdrop-blur px-4 py-3 shadow-[0_0_30px_rgba(34,211,238,0.18)]">
+          <div className="h-14 w-14 rounded-xl bg-white p-2 ring-1 ring-white/80 shadow-[0_0_20px_rgba(56,189,248,0.45)]">
+            <img src={abcLogo} alt="ABC" className="h-full w-full object-contain" />
+          </div>
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.25em] text-cyan-100/90">Marca Corporativa</p>
+            <p className="text-sm font-extrabold tracking-[0.18em]">ABC</p>
+          </div>
+        </div>
 
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
           <div className="max-w-2xl">
@@ -60,6 +69,13 @@ export default function Dashboard() {
             <p className="mt-3 text-slate-200 md:text-lg">
               Gestiona reservas, áreas y puestos desde una experiencia moderna y profesional.
             </p>
+
+            <div className="mt-5 inline-flex items-center gap-3 rounded-2xl border border-white/25 bg-white/10 px-3.5 py-2 backdrop-blur">
+              <div className="h-9 w-9 rounded-lg bg-white p-1.5">
+                <img src={abcLogo} alt="ABC" className="h-full w-full object-contain" />
+              </div>
+              <p className="text-xs font-bold tracking-[0.2em] text-cyan-100">ABC DESK BOOKING</p>
+            </div>
           </div>
 
           <div className="rounded-2xl border border-white/20 bg-white/10 backdrop-blur px-5 py-4 min-w-[280px]">
