@@ -516,6 +516,9 @@ router.put("/:idReserva/cancelar", authenticateToken, async (req, res) => {
   const { observacion, emergencia, idPuestoTrabajo } = req.body;  // ✅ observacion + flag emergencia    
   const idEmpleado = req.user.idEmpleado;  // ✅ Del token JWT    
   const usuario = req.user.username;        
+
+  const idPuestoDesdeBody = Number(idPuestoTrabajo);
+  const idPuestoBodyValido = Number.isInteger(idPuestoDesdeBody) && idPuestoDesdeBody > 0 ? idPuestoDesdeBody : null;
         
   // Validar parámetros        
   if (!observacion) {        
@@ -560,8 +563,20 @@ router.put("/:idReserva/cancelar", authenticateToken, async (req, res) => {
       }
     }
 
+    const idPuestoReserva = Number(reserva?.IdPuestoTrabajo ?? reserva?.IDPuestoTrabajo ?? reserva?.idPuestoTrabajo);
+    const idPuestoFinal = idPuestoBodyValido ?? (Number.isInteger(idPuestoReserva) && idPuestoReserva > 0 ? idPuestoReserva : null);
+
+    if (!idPuestoFinal) {
+      logAuditoria('CANCELAR_RESERVA', usuario, {
+        idReserva,
+        resultado: 'error',
+        error: 'No fue posible determinar IdPuestoTrabajo para cancelar la reserva',
+      });
+      return res.status(400).json({ error: 'No fue posible determinar IdPuestoTrabajo para cancelar la reserva' });
+    }
+
     // SP_EditReservas con @P=1 para cancelar reserva        
-    var Rta = await GetData(`EditReservas=@P%3D1,@IdEmpleadoPuestoTrabajo%3D${idReserva},@Obs%3D'${encodeURIComponent(observacion)}',@IdEmpleado%3D${idEmpleado},@IdPuestoTrabajo%3D${idPuestoTrabajo}`);        
+    var Rta = await GetData(`EditReservas=@P%3D1,@IdEmpleadoPuestoTrabajo%3D${idReserva},@Obs%3D'${encodeURIComponent(observacion)}',@IdEmpleado%3D${idEmpleado},@IdPuestoTrabajo%3D${idPuestoFinal}`);        
         
     // ✅ Validar formato PHP inválido      
     if (!Rta || Rta.trim().startsWith('Array') || Rta.trim().startsWith(':')) {        
