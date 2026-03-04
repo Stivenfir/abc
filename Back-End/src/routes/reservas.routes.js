@@ -101,6 +101,50 @@ function getInicioJornadaReserva(fecha) {
   return dt;
 }
 
+function getBogotaNowParts() {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Bogota',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  }).formatToParts(new Date());
+
+  const map = Object.fromEntries(parts.map((p) => [p.type, p.value]));
+  return {
+    year: Number(map.year),
+    month: Number(map.month),
+    day: Number(map.day),
+    hour: Number(map.hour),
+    minute: Number(map.minute),
+    second: Number(map.second),
+  };
+}
+
+function getBogotaDateAtMidnight() {
+  const { year, month, day } = getBogotaNowParts();
+  return new Date(year, month - 1, day);
+}
+
+function isBusinessDay(fecha) {
+  return !!fecha && !isDomingo(fecha) && !isFestivo(fecha);
+}
+
+function getBusinessDayBefore(fecha) {
+  const cursor = new Date(fecha);
+  cursor.setDate(cursor.getDate() - 1);
+  cursor.setHours(0, 0, 0, 0);
+
+  while (!isBusinessDay(cursor)) {
+    cursor.setDate(cursor.getDate() - 1);
+  }
+
+  return cursor;
+}
+
 
 function logAuditoria(accion, usuario, detalles) {        
   const timestamp = new Date().toISOString();        
@@ -375,6 +419,14 @@ router.post("/", authenticateToken, async (req, res) => {
       error: "idPuestoTrabajo y fecha son requeridos"        
     });        
   }  
+
+  const ahoraBogota = getBogotaNowParts();
+  const fueraHorarioCreacion = ahoraBogota.hour < 7 || ahoraBogota.hour >= 15;
+  if (fueraHorarioCreacion) {
+    return res.status(400).json({
+      error: "Solo se pueden crear reservas entre 7:00 a.m. y 3:00 p.m. (hora Colombia)",
+    });
+  }
     
   const fechaSql = toSqlDateYYYYMMDD(fecha);
   if (!fechaSql) {
@@ -550,15 +602,17 @@ router.put("/:idReserva/cancelar", authenticateToken, async (req, res) => {
     const fechaReserva = toLocalDateFromYYYYMMDD(fechaBase);
     const inicioJornada = getInicioJornadaReserva(fechaReserva);
 
-    if (inicioJornada) {
-      const limiteCancelacion = new Date(inicioJornada.getTime() - 60 * 60 * 1000);
-      const fueraDeTiempo = new Date() > limiteCancelacion;
-      const esEmergencia = emergencia === true || emergencia === 1 || String(emergencia).toLowerCase() === 'true';
+    const esEmergencia = emergencia === true || emergencia === 1 || String(emergencia).toLowerCase() === 'true';
 
-      if (fueraDeTiempo && !esEmergencia) {
+    if (inicioJornada && !esEmergencia) {
+      const hoyBogota = getBogotaDateAtMidnight();
+      const limiteCancelacion = getBusinessDayBefore(fechaReserva);
+      const fueraDeTiempo = hoyBogota > limiteCancelacion;
+
+      if (fueraDeTiempo) {
         return res.status(400).json({
           code: "CANCELACION_FUERA_DE_TIEMPO",
-          error: "La cancelación normal debe hacerse al menos 1 hora antes del inicio de la jornada",
+          error: "La cancelación normal debe hacerse con al menos 1 día hábil de anticipación",
         });
       }
     }
