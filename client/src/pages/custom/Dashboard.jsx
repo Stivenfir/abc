@@ -42,13 +42,9 @@ export default function CM_Dashboard() {
         className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-r from-[#0b1630] via-[#0f2248] to-[#17325c] p-7 md:p-9 text-white shadow-xl"
       >
         <div className="absolute -top-16 -right-10 w-56 h-56 rounded-full bg-blue-400/15 blur-3xl" />
-        <div className="absolute top-5 right-5 hidden lg:flex items-center gap-3 rounded-2xl border border-cyan-200/40 bg-white/10 backdrop-blur px-4 py-3 shadow-[0_0_30px_rgba(34,211,238,0.18)]">
-          <div className="h-14 w-14 rounded-xl bg-white p-2 ring-1 ring-white/80 shadow-[0_0_20px_rgba(56,189,248,0.45)]">
-            <img src={abcLogo} alt="ABC" className="h-full w-full object-contain" />
-          </div>
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.25em] text-cyan-100/90">Marca Corporativa</p>
-            <p className="text-sm font-extrabold tracking-[0.18em]">ABC</p>
+        <div className="absolute right-8 top-1/2 -translate-y-1/2 hidden lg:block pointer-events-none opacity-[0.16]">
+          <div className="h-44 w-44 rounded-3xl bg-white/10 p-4 backdrop-blur-sm border border-white/15">
+            <img src={abcLogo} alt="ABC" className="h-full w-full object-contain drop-shadow-[0_0_22px_rgba(125,211,252,0.45)]" />
           </div>
         </div>
 
@@ -63,19 +59,13 @@ export default function CM_Dashboard() {
               Gestiona tu jornada con una experiencia visual más moderna, profesional y rápida.
             </p>
 
-            <div className="mt-5 inline-flex items-center gap-3 rounded-2xl border border-white/25 bg-white/10 px-3.5 py-2 backdrop-blur">
-              <div className="h-9 w-9 rounded-lg bg-white p-1.5">
-                <img src={abcLogo} alt="ABC" className="h-full w-full object-contain" />
-              </div>
-              <p className="text-xs font-bold tracking-[0.2em] text-cyan-100">ABC DESK BOOKING</p>
-            </div>
           </div>
 
           <div className="rounded-2xl border border-white/20 bg-white/10 backdrop-blur px-5 py-4 min-w-[280px]">
             <p className="text-xs uppercase tracking-wider text-slate-200">Fecha del sistema</p>
             <p className="mt-2 text-base font-semibold capitalize">{hoy}</p>
             <div className="mt-4 inline-flex items-center gap-3 px-4 py-2.5 rounded-xl border border-cyan-200/35 bg-white/15 shadow-[0_0_22px_rgba(34,211,238,0.22)]">
-              <div className="h-10 w-10 rounded-lg bg-white/95 p-1.5 ring-1 ring-white/80">
+              <div className="h-12 w-12 rounded-lg bg-white/95 p-1.5 ring-1 ring-white/80">
                 <img src={abcLogo} alt="ABC" className="h-full w-full object-contain drop-shadow-[0_0_8px_rgba(56,189,248,0.45)]" />
               </div>
               <span className="text-xs font-black tracking-[0.2em] text-white">ABC DESK BOOKING</span>
