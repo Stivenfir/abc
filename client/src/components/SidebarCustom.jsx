@@ -1,8 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import abcLogo from "../Imagenes/abc.png";
 
 const menuItems = [
-  { path: "/dashboard", label: "Dashboard", icon: "🏠", roles: ["admin", "jefe", "empleado"] },
+  { path: "/c_dashboard", label: "Dashboard", icon: "🏠", roles: ["empleado"] },
   { path: "/mapa", label: "Mapa de Puestos", icon: "🗺️", roles: ["admin", "jefe", "empleado"] },
   { path: "/mis-reservas", label: "Mis Reservas", icon: "📋", roles: ["admin", "jefe", "empleado"] },
 ];
@@ -49,8 +50,15 @@ export default function Sidebar({ isOpen, onClose }) {
               className="mb-6"
             >
               <div className="rounded-2xl p-4 border border-slate-600/50 bg-slate-900/60 shadow-lg">
-                <p className="text-slate-50 font-bold text-base">ABC Desk Booking</p>
-                <p className="mt-0.5 text-xs text-slate-300">Panel corporativo de operación</p>
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-lg bg-white/95 p-1.5 ring-1 ring-white/70">
+                    <img src={abcLogo} alt="ABC" className="h-full w-full object-contain" />
+                  </div>
+                  <div>
+                    <p className="text-slate-50 font-bold text-base">ABC Desk Booking</p>
+                    <p className="mt-0.5 text-xs text-slate-300">Panel corporativo de operación</p>
+                  </div>
+                </div>
               </div>
             </motion.div>
 
