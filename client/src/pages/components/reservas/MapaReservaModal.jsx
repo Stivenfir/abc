@@ -141,6 +141,7 @@ export default function MapaReservaModal({
   const [planoUrl, setPlanoUrl] = useState(null);  
   const [loading, setLoading] = useState(true);  
   const [loadingUbicacion, setLoadingUbicacion] = useState(false);
+  const [resolviendoPiso, setResolviendoPiso] = useState(false);
   const [delimitacionesArea, setDelimitacionesArea] = useState([]);
   const canvasRef = useRef(null);  
   const imagenRef = useRef(null);  
@@ -319,6 +320,7 @@ export default function MapaReservaModal({
       const token = localStorage.getItem("token");
       if (!token) return;
 
+      setResolviendoPiso(true);
       try {
         // 1) Buscar el puesto en catálogo real (pisos -> áreas -> puestos), sin depender de disponibilidad diaria.
         const resPisos = await fetch(`${API}/api/pisos`);
@@ -393,6 +395,8 @@ export default function MapaReservaModal({
         setReservaRender((prev) => ({ ...(prev || {}), ...puesto }));
       } catch {
         // noop
+      } finally {
+        setResolviendoPiso(false);
       }
     };
 
@@ -596,9 +600,10 @@ export default function MapaReservaModal({
             </div>
           )}
   
-          {loading ? (  
-            <div className="flex justify-center py-16">  
+          {loading || resolviendoPiso ? (  
+            <div className="flex flex-col items-center justify-center py-16 gap-3">  
               <div className="w-16 h-16 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>  
+              <p className="text-sm text-gray-600 font-medium">Cargando ubicación del puesto... espera un momento</p>
             </div>  
           ) : !pisoEfectivo?.IDPiso ? (
             <div className="p-4 rounded-xl bg-yellow-50 border border-yellow-200 text-yellow-800">
