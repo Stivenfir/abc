@@ -18,16 +18,49 @@ import DashboardLayout from "./layouts/DashboardLayout";
 import L_DashboardLayout from "./layouts/DashboardLayoutLeader";
 import C_DashboardLayout from "./layouts/DashboardLayoutCustom";
 import Puestos from "./pages/Puestos";
-import MisReservas from "./pages/MisReservas"; // ⬅️ Agregar import 
+import MisReservas from "./pages/MisReservas";
 import ListaReservas from "./pages/admin/ListaReservas";
 import ReasignacionesConstruccion from "./pages/admin/ReasignacionesConstruccion";
+
+const roleHomeMap = {
+  admin: "/dashboard",
+  jefe: "/l_dashboard",
+  empleado: "/c_dashboard",
+};
+
+function getUserRole() {
+  return localStorage.getItem("userRole") || "empleado";
+}
+
+function getRoleHome(role = getUserRole()) {
+  return roleHomeMap[role] || roleHomeMap.empleado;
+}
 
 function PrivateRoute({ children }) {
   return isAuthed() ? children : <Navigate to="/login" replace />;
 }
 
+function RequireRole({ allowedRoles, children }) {
+  if (!isAuthed()) {
+    return <Navigate to="/login" replace />;
+  }
+
+  const userRole = getUserRole();
+  return allowedRoles.includes(userRole)
+    ? children
+    : <Navigate to={getRoleHome(userRole)} replace />;
+}
+
+function RoleHomeRedirect() {
+  if (!isAuthed()) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <Navigate to={getRoleHome()} replace />;
+}
+
 function RoleBasedLayout({ children }) {
-  const userRole = localStorage.getItem("userRole") || "empleado";
+  const userRole = getUserRole();
 
   if (userRole === "admin") {
     return <DashboardLayout>{children}</DashboardLayout>;
@@ -73,45 +106,44 @@ function AppRoutes() {
         <Route
           path="/dashboard"
           element={
-            <PrivateRoute>
+            <RequireRole allowedRoles={["admin"]}>
               <DashboardLayout>
                 <Dashboard />
               </DashboardLayout>
-            </PrivateRoute>
+            </RequireRole>
           }
         />
 
         <Route
           path="/l_dashboard"
           element={
-            <PrivateRoute>
+            <RequireRole allowedRoles={["jefe"]}>
               <L_DashboardLayout>
                 <LD_Dashboard />
               </L_DashboardLayout>
-            </PrivateRoute>
+            </RequireRole>
           }
         />
 
         <Route
           path="/c_dashboard"
           element={
-            <PrivateRoute>
+            <RequireRole allowedRoles={["empleado"]}>
               <C_DashboardLayout>
                 <CM_Dashboard />
               </C_DashboardLayout>
-            </PrivateRoute>
+            </RequireRole>
           }
         />
-
 
         <Route
           path="/admin/mapa"
           element={
-            <PrivateRoute>
+            <RequireRole allowedRoles={["admin"]}>
               <DashboardLayout>
                 <Mapa />
               </DashboardLayout>
-            </PrivateRoute>
+            </RequireRole>
           }
         />
 
@@ -129,34 +161,33 @@ function AppRoutes() {
         <Route
           path="/areas"
           element={
-            <PrivateRoute>
+            <RequireRole allowedRoles={["admin"]}>
               <AnimatedPage>
                 <Areas />
               </AnimatedPage>
-            </PrivateRoute>
+            </RequireRole>
           }
         />
 
         <Route
           path="/puestos"
           element={
-            <PrivateRoute>
+            <RequireRole allowedRoles={["admin"]}>
               <AnimatedPage>
                 <Puestos />
               </AnimatedPage>
-            </PrivateRoute>
+            </RequireRole>
           }
         />
-
 
         <Route
           path="/admin/mis-reservas"
           element={
-            <PrivateRoute>
+            <RequireRole allowedRoles={["admin"]}>
               <DashboardLayout>
                 <MisReservas />
               </DashboardLayout>
-            </PrivateRoute>
+            </RequireRole>
           }
         />
 
@@ -171,32 +202,30 @@ function AppRoutes() {
           }
         />
 
-
         <Route
           path="/admin/asignaciones"
           element={
-            <PrivateRoute>
+            <RequireRole allowedRoles={["admin"]}>
               <DashboardLayout>
                 <ReasignacionesConstruccion />
               </DashboardLayout>
-            </PrivateRoute>
+            </RequireRole>
           }
         />
 
         <Route
           path="/admin/usuarios"
           element={
-            <PrivateRoute>
+            <RequireRole allowedRoles={["admin"]}>
               <DashboardLayout>
                 <ListaReservas />
               </DashboardLayout>
-            </PrivateRoute>
+            </RequireRole>
           }
         />
 
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
-
+        <Route path="/" element={<RoleHomeRedirect />} />
+        <Route path="*" element={<RoleHomeRedirect />} />
       </Routes>
     </AnimatePresence>
   );

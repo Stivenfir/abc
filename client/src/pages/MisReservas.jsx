@@ -20,6 +20,8 @@ export default function MisReservas() {
   const [modalVisualizacion, setModalVisualizacion] = useState(false);
   const [modalMapaReserva, setModalMapaReserva] = useState(false);
   const [reservaMapaSeleccionada, setReservaMapaSeleccionada] = useState(null);
+  const [confirmandoReserva, setConfirmandoReserva] = useState(false);
+  const [feedbackConfirmacion, setFeedbackConfirmacion] = useState(null);
 
   const reservasActivas = reservasData.reservas.filter((r) => r.ReservaActiva).length;
 
@@ -61,6 +63,8 @@ export default function MisReservas() {
 
       const puestoAsignado = puestosDisponibles[0];
 
+      setFeedbackConfirmacion(null);
+
       setReservaPendiente({
         fecha: fechaSeleccionada,
         puestoAsignado,
@@ -87,6 +91,9 @@ export default function MisReservas() {
         throw new Error("No se pudo obtener la fecha de reserva");
       }
 
+      setConfirmandoReserva(true);
+      setFeedbackConfirmacion({ tipo: "info", texto: "Procesando tu reserva, por favor espera..." });
+
       const token = localStorage.getItem("token");
       const fechaFormateada =
         reservaPendiente.fecha instanceof Date
@@ -112,21 +119,30 @@ export default function MisReservas() {
         throw new Error(errorData.error || "Error al crear la reserva");
       }
 
+      const okMessage = "✓ Reserva creada exitosamente";
+      setFeedbackConfirmacion({ tipo: "success", texto: okMessage });
       reservasData.setMensaje({
         tipo: "success",
-        texto: "✓ Reserva creada exitosamente",
+        texto: okMessage,
       });
-
-      setModalConfirmacion(false);
-      setReservaPendiente(null);
 
       await reservasData.cargarDatos();
+
+      setTimeout(() => {
+        setModalConfirmacion(false);
+        setReservaPendiente(null);
+        setFeedbackConfirmacion(null);
+      }, 800);
     } catch (error) {
       console.error("Error al confirmar reserva:", error);
+      const errMessage = `✗ ${error.message}`;
+      setFeedbackConfirmacion({ tipo: "error", texto: errMessage });
       reservasData.setMensaje({
         tipo: "error",
-        texto: `✗ ${error.message}`,
+        texto: errMessage,
       });
+    } finally {
+      setConfirmandoReserva(false);
     }
   };
 
@@ -274,9 +290,13 @@ export default function MisReservas() {
           onConfirmar={handleConfirmarReserva}
           onVerMapa={handleVerMapa}
           onCancelar={() => {
+            if (confirmandoReserva) return;
             setModalConfirmacion(false);
             setReservaPendiente(null);
+            setFeedbackConfirmacion(null);
           }}
+          feedback={feedbackConfirmacion}
+          isConfirmando={confirmandoReserva}
         />
       )}
 
