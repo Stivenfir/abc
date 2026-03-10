@@ -27,8 +27,19 @@ export default function DetalleReservaModal({
     });  
   };  
   
+  const isReservaActiva = (valor) => {
+    if (valor === true || valor === 1 || valor === "1") return true;
+    if (valor === false || valor === 0 || valor === "0") return false;
+
+    const normalizado = String(valor ?? "").trim().toLowerCase();
+    if (["si", "sí", "true", "activa", "activo"].includes(normalizado)) return true;
+    if (["no", "false", "cancelada", "cancelado", "inactiva"].includes(normalizado)) return false;
+
+    return Boolean(valor);
+  };
+
   const getEstadoBadge = (estado) => {  
-    if (estado === 1 || estado === '1') {  
+    if (isReservaActiva(estado)) {  
       return {  
         bg: 'bg-green-100',  
         text: 'text-green-700',  
@@ -148,15 +159,15 @@ export default function DetalleReservaModal({
               <div className="p-4 bg-gray-50 rounded-lg">  
                 <p className="text-xs font-medium text-gray-500 mb-1">Estado</p>  
                 <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${  
-                  reserva.ReservaActiva === 1  
+                  isReservaActiva(reserva.ReservaActiva)  
                     ? 'bg-green-100 text-green-800'  
                     : 'bg-red-100 text-red-800'  
                 }`}>  
-                  {reserva.ReservaActiva === 1 ? '✓ Activa' : '✕ Cancelada'}  
+                  {isReservaActiva(reserva.ReservaActiva) ? '✓ Activa' : '✕ Cancelada'}  
                 </span>  
               </div>  
   
-              {reserva.ReservaActiva === 0 && (  
+              {!isReservaActiva(reserva.ReservaActiva) && (  
                 <>  
                   <div className="p-4 bg-gray-50 rounded-lg">  
                     <p className="text-xs font-medium text-gray-500 mb-1">Fecha de Cancelación</p>  
@@ -203,7 +214,7 @@ export default function DetalleReservaModal({
   
         {/* Footer con acciones */}  
         <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">  
-          {reserva.ReservaActiva === 1 && (  
+          {isReservaActiva(reserva.ReservaActiva) && (  
             <motion.button  
               whileHover={{ scale: 1.02 }}  
               whileTap={{ scale: 0.98 }}  

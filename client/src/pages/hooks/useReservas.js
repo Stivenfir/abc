@@ -213,7 +213,29 @@ export function useReservas() {
     }
   };
 
-  const cancelarReserva = async (idReserva, observacion) => {
+  const cancelarReserva = async (reservaInput, observacionInicial) => {
+    const idReserva = Number(
+      typeof reservaInput === "object"
+        ? reservaInput?.IdEmpleadoPuestoTrabajo
+        : reservaInput,
+    );
+    const idPuestoTrabajo = Number(
+      typeof reservaInput === "object"
+        ? reservaInput?.IdPuestoTrabajo
+        : undefined,
+    );
+
+    if (!idReserva) {
+      setMensaje({ tipo: "error", texto: "✗ No se pudo identificar la reserva a cancelar" });
+      return false;
+    }
+
+    const razon = (observacionInicial || prompt("Indica la razón de la cancelación:", "Cancelada por el usuario") || "").trim();
+    if (!razon) {
+      setMensaje({ tipo: "error", texto: "✗ Debes indicar una razón para cancelar" });
+      return false;
+    }
+
     if (!confirm("¿Estás seguro de cancelar esta reserva?")) return false;
 
     try {
@@ -227,8 +249,9 @@ export function useReservas() {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            observacion: observacion || (esEmergencia ? "Cancelación de emergencia" : "Cancelada por el usuario"),
+            observacion: razon || (esEmergencia ? "Cancelación de emergencia" : "Cancelada por el usuario"),
             emergencia: esEmergencia,
+            ...(Number.isInteger(idPuestoTrabajo) && idPuestoTrabajo > 0 ? { idPuestoTrabajo } : {}),
           }),
         });
 
@@ -240,7 +263,7 @@ export function useReservas() {
 
       if (!resultado.ok && resultado.data?.code === "CANCELACION_FUERA_DE_TIEMPO") {
         const confirmarEmergencia = confirm(
-          "La cancelación normal requiere al menos 1 hora de anticipación. ¿Deseas cancelarla como emergencia?",
+          "La cancelación normal requiere al menos 1 día hábil de anticipación. ¿Deseas cancelarla como emergencia?",
         );
 
         if (!confirmarEmergencia) {
@@ -254,6 +277,19 @@ export function useReservas() {
       if (!resultado.ok) {
         throw new Error(resultado.data?.error || resultado.data?.message || "Error al cancelar reserva");
       }
+
+      setReservas((prev) =>
+        prev.map((r) =>
+          Number(r?.IdEmpleadoPuestoTrabajo) === idReserva
+            ? {
+                ...r,
+                ReservaActiva: 0,
+                ObservacionCancelacionReserva: razon,
+                FechaCancelacionReserva: new Date().toISOString(),
+              }
+            : r,
+        ),
+      );
 
       setMensaje({ tipo: "success", texto: "✓ Reserva cancelada" });
       await cargarDatos();
