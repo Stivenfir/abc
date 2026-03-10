@@ -33,8 +33,19 @@ export default function ReservasLista({
     return estados[estado] || estados.activa;
   };
 
+  const isReservaActiva = (valor) => {
+    if (valor === true || valor === 1 || valor === "1") return true;
+    if (valor === false || valor === 0 || valor === "0") return false;
+
+    const normalizado = String(valor ?? "").trim().toLowerCase();
+    if (["si", "sí", "true", "activa", "activo"].includes(normalizado)) return true;
+    if (["no", "false", "cancelada", "cancelado", "inactiva"].includes(normalizado)) return false;
+
+    return Boolean(valor);
+  };
+
   const determinarEstado = (reserva) => {
-    if (!reserva.ReservaActiva) return "cancelada";
+    if (!isReservaActiva(reserva?.ReservaActiva)) return "cancelada";
 
     const fechaReserva = new Date(reserva.FechaReserva);
     const hoy = new Date();
@@ -80,7 +91,7 @@ export default function ReservasLista({
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
       <div className="mb-4">
         <h4 className="text-lg font-semibold text-gray-900">
-          Mis Reservas ({reservas.length})
+          Gestión de Reservaciones ({reservas.length})
         </h4>
       </div>
 
@@ -166,7 +177,7 @@ export default function ReservasLista({
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    onClick={() => onCancelarReserva(reserva.IdEmpleadoPuestoTrabajo)}
+                    onClick={() => onCancelarReserva(reserva)}
                     className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium"
                   >
                     🗑️ Cancelar Reserva

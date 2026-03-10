@@ -1,10 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import abcLogo from "../Imagenes/abc.png";
 
 const menuItems = [
   { path: "/dashboard", label: "Dashboard", icon: "🏠", roles: ["admin", "jefe", "empleado"] },
   { path: "/admin/mapa", label: "Mapa de Puestos", icon: "🗺️", roles: ["admin", "jefe", "empleado"] },
-  { path: "/admin/mis-reservas", label: "Mis Reservas", icon: "📋", roles: ["admin", "jefe", "empleado"] },
+  { path: "/admin/mis-reservas", label: "Gestión de Reservaciones", icon: "📋", roles: ["admin", "jefe", "empleado"] },
   { path: "/areas", label: "Gestión de Áreas", icon: "📍", roles: ["admin"] },
   { path: "/puestos", label: "Gestión de Puestos", icon: "🪑", roles: ["admin"] },
   { path: "/admin/usuarios", label: "Lista de Reservas", icon: "📊", roles: ["admin"] },
@@ -23,6 +24,7 @@ export default function Sidebar({ isOpen, onClose }) {
   };
 
   const currentRole = roleConfig[userRole] || roleConfig.empleado;
+  const visibleItems = menuItems.filter((item) => item.roles.includes(userRole));
   const userInitials = username
     .split(" ")
     .filter(Boolean)
@@ -61,15 +63,20 @@ export default function Sidebar({ isOpen, onClose }) {
               className="mb-6"
             >
               <div className="rounded-2xl p-4 border border-slate-600/50 bg-slate-900/60 shadow-lg">
-                <div>
-                  <p className="text-slate-50 font-bold text-base">ABC Desk Booking</p>
-                  <p className="mt-0.5 text-xs text-slate-300">Panel corporativo de operación</p>
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-lg bg-white/95 p-1.5 ring-1 ring-white/70">
+                    <img src={abcLogo} alt="ABC" className="h-full w-full object-contain" />
+                  </div>
+                  <div>
+                    <p className="text-slate-50 font-bold text-base">ABC Desk Booking</p>
+                    <p className="mt-0.5 text-xs text-slate-300">Panel corporativo de operación</p>
+                  </div>
                 </div>
               </div>
             </motion.div>
 
             <nav className="space-y-1.5 flex-1 overflow-y-auto pr-1">
-              {menuItems.map((item, index) => {
+              {visibleItems.map((item, index) => {
                 const isActive = location.pathname === item.path;
 
                 return (

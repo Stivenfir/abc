@@ -15,30 +15,7 @@ export default function ReservasPanel({
   const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
   const [vistaActual, setVistaActual] = useState("calendario");
 
-  if (!pisoSeleccionado) {
-    return (
-      <div className="lg:col-span-2">
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-xl shadow-sm border border-gray-200 p-8"
-        >
-          <div className="text-center py-16">
-            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-4xl">🏢</span>
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              Selecciona un piso
-            </h3>
-            <p className="text-gray-500">
-              Elige un piso habilitado de tu área para reservar automáticamente
-              un puesto
-            </p>
-          </div>
-        </motion.div>
-      </div>
-    );
-  }
+  const calendarioDisponible = Boolean(pisoSeleccionado);
 
   return (
     <div className="lg:col-span-2">
@@ -51,11 +28,12 @@ export default function ReservasPanel({
               </div>
               <div>
                 <h3 className="text-xl font-bold text-gray-900">
-                  Piso {pisoSeleccionado.NumeroPiso}
+                  {pisoSeleccionado ? `Piso ${pisoSeleccionado.NumeroPiso}` : "Gestión de Reservaciones"}
                 </h3>
                 <p className="text-sm text-gray-500">
-                  Bodega {pisoSeleccionado.Bodega} • Asignación automática por
-                  área
+                  {pisoSeleccionado
+                    ? `Bodega ${pisoSeleccionado.Bodega} • Asignación automática por área`
+                    : "Puedes revisar tus reservas activas aunque no tengas pisos habilitados para reservar"}
                 </p>
               </div>
             </div>
@@ -79,7 +57,7 @@ export default function ReservasPanel({
                     : "text-gray-600 hover:text-gray-900"
                 }`}
               >
-                📋 Mis Reservas
+                📋 Reservaciones
               </button>
             </div>
           </div>
@@ -94,12 +72,30 @@ export default function ReservasPanel({
               exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.2 }}
             >
-              <CalendarioReservas
-                pisoSeleccionado={pisoSeleccionado}
-                fechaSeleccionada={fechaSeleccionada}
-                onSeleccionarFecha={setFechaSeleccionada}
-                onSolicitarReserva={onSolicitarReserva}
-              />
+              {calendarioDisponible ? (
+                <CalendarioReservas
+                  pisoSeleccionado={pisoSeleccionado}
+                  fechaSeleccionada={fechaSeleccionada}
+                  onSeleccionarFecha={setFechaSeleccionada}
+                  onSolicitarReserva={onSolicitarReserva}
+                />
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-white rounded-xl shadow-sm border border-gray-200 p-8"
+                >
+                  <div className="text-center py-16">
+                    <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span className="text-4xl">🏢</span>
+                    </div>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Selecciona un piso</h3>
+                    <p className="text-gray-500">
+                      Para crear nuevas reservas primero debes tener un piso habilitado.
+                    </p>
+                  </div>
+                </motion.div>
+              )}
             </motion.div>
           ) : (
             <motion.div

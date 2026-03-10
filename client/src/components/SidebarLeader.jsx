@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const menuItems = [  
   { path: "/dashboard", label: "Dashboard", icon: "🏠", roles: ["admin", "jefe", "empleado"] },  
   { path: "/mapa", label: "Mapa de Puestos", icon: "🗺️", roles: ["admin", "jefe", "empleado"] },  
-  { path: "/mis-reservas", label: "Mis Reservas", icon: "📋", roles: ["admin", "jefe", "empleado"] },  
+  { path: "/mis-reservas", label: "Gestión de Reservaciones", icon: "📋", roles: ["admin", "jefe", "empleado"] },  
     
   // Sección Lider  
   { path: "/admin/asignaciones", label: "Re-asignar Puestos", icon: "🔄", roles: ["admin", "jefe"] },  

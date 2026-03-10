@@ -16,6 +16,8 @@ export default function Mapa() {
   const [zoomLevel, setZoomLevel] = useState(1);
   const navigate = useNavigate();
   const API = import.meta.env.VITE_API_URL || "http://localhost:3000";
+  const userRole = localStorage.getItem("userRole") || "empleado";
+  const canManageMaps = userRole === "admin";
 
   useEffect(() => {
     cargarPisos();
@@ -162,7 +164,7 @@ export default function Mapa() {
               <h1 className="text-2xl font-bold text-gray-900">
                 Gestión de Planos
               </h1>
-              <p className="text-sm text-gray-500">Panel de Administración</p>
+              <p className="text-sm text-gray-500">{canManageMaps ? "Panel de Administración" : "Modo consulta"}</p>
             </div>
           </div>
           <div className="flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-lg border border-blue-100">
@@ -358,37 +360,41 @@ export default function Mapa() {
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm space-x-2">
-                        {!planos[piso.IDPiso] ? (
-                          <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => setModoEdicion(piso.IDPiso)}
-                            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-sm inline-flex items-center"
-                          >
-                            <span className="mr-1">+</span>
-                            Añadir
-                          </motion.button>
-                        ) : (
-                          <>
+                        {canManageMaps ? (
+                          !planos[piso.IDPiso] ? (
                             <motion.button
                               whileHover={{ scale: 1.05 }}
                               whileTap={{ scale: 0.95 }}
                               onClick={() => setModoEdicion(piso.IDPiso)}
-                              className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition shadow-sm inline-flex items-center"
+                              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-sm inline-flex items-center"
                             >
-                              <span className="mr-1">✎</span>
-                              Editar
+                              <span className="mr-1">+</span>
+                              Añadir
                             </motion.button>
-                            <motion.button
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.95 }}
-                              onClick={() => handleEliminar(piso.IDPiso)}
-                              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition shadow-sm inline-flex items-center"
-                            >
-                              <span className="mr-1">✕</span>
-                              Eliminar
-                            </motion.button>
-                          </>
+                          ) : (
+                            <>
+                              <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={() => setModoEdicion(piso.IDPiso)}
+                                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition shadow-sm inline-flex items-center"
+                              >
+                                <span className="mr-1">✎</span>
+                                Editar
+                              </motion.button>
+                              <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={() => handleEliminar(piso.IDPiso)}
+                                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition shadow-sm inline-flex items-center"
+                              >
+                                <span className="mr-1">✕</span>
+                                Eliminar
+                              </motion.button>
+                            </>
+                          )
+                        ) : (
+                          <span className="text-xs font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Solo lectura</span>
                         )}
                       </td>
                     </tr>
